@@ -35,9 +35,12 @@ def aggiungi_libro(biblioteca, titolo, autore, anno, pagine, sezione, file_path)
     if sezione in biblioteca:
         if titolo not in biblioteca[sezione]:
             biblioteca[sezione][titolo] = infoLibroDiz
-            file = open(file_path, "a")
-            file.write(f"{titolo},{autore},{anno},{pagine},{sezione}\n")
-            file.close()
+
+            rigaCSV = [titolo, autore, anno, pagine, sezione]
+            with open(file_path, 'a', newline='', encoding='utf-8') as file:
+                writer = csv.writer(file)
+                writer.writerow(rigaCSV)
+
             return infoLibroDiz
         else:
             return None
