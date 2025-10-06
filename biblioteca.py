@@ -1,22 +1,66 @@
+import csv
+
+
 def carica_da_file(file_path):
     """Carica i libri dal file"""
     # TODO
+    with open(file_path, newline='', encoding='utf-8') as file:
+        reader = csv.reader(file)
+
+        next(reader)
+        biblioteca = {}
+
+        for infoLibro in reader:
+            infoLibroDiz = {}
+            infoLibroDiz["Autori"] = infoLibro[1]
+            infoLibroDiz["Anno"] = infoLibro[2]
+            infoLibroDiz["Pagine"] = infoLibro[3]
+            # print(infoLibro)
+            if int(infoLibro[4]) not in biblioteca:
+                biblioteca[int(infoLibro[4])] = {}
+
+            #aggiungo libro alla sezione
+            biblioteca[int(infoLibro[4])][infoLibro[0]]= infoLibroDiz
+        file.close()
+    return biblioteca
 
 
 def aggiungi_libro(biblioteca, titolo, autore, anno, pagine, sezione, file_path):
     """Aggiunge un libro nella biblioteca"""
     # TODO
+    infoLibroDiz = {}
+    infoLibroDiz["Autori"] = autore
+    infoLibroDiz["Anno"] = anno
+    infoLibroDiz["Pagine"] = pagine
+    if sezione in biblioteca:
+        if titolo not in biblioteca[sezione]:
+            biblioteca[sezione][titolo] = infoLibroDiz
+            file = open(file_path, "a")
+            file.write(f"{titolo},{autore},{anno},{pagine},{sezione}\n")
+            file.close()
+            return infoLibroDiz
+        else:
+            return None
+    else:
+        return None
 
 
 def cerca_libro(biblioteca, titolo):
     """Cerca un libro nella biblioteca dato il titolo"""
     # TODO
-
+    for sezione in biblioteca:
+        if titolo in biblioteca[sezione]:
+            libroCercato = biblioteca[sezione][titolo]
+            return f"{titolo}, {libroCercato["Autori"]}, {libroCercato["Anno"]}, {libroCercato["Pagine"]}, {sezione}"
+    return None
 
 def elenco_libri_sezione_per_titolo(biblioteca, sezione):
     """Ordina i titoli di una data sezione della biblioteca in ordine alfabetico"""
     # TODO
-
+    if sezione in biblioteca:
+        sezOrdinata = sorted(biblioteca[sezione].keys())
+        return sezOrdinata
+    return None
 
 def main():
     biblioteca = []
